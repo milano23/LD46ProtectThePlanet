@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Planet
+  - Rocket
+  - Asteroid
+  - Laser
+  - AsteroidManager
+  - Vacuum
+  - AsteroidDebris
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - Planet
+  - Rocket
+  - Asteroid
+  - Vacuum
+  - AsteroidDebris
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Background
+    uniqueID: 3371502315
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Planet
+    uniqueID: 2095512025
+    locked: 0
+  - name: Asteroid
+    uniqueID: 1302896967
+    locked: 0
+  - name: Asteroid Debris
+    uniqueID: 3629633019
+    locked: 0
+  - name: Rocket
+    uniqueID: 2282132131
+    locked: 0
+  - name: Vacuum
+    uniqueID: 170564917
+    locked: 0
