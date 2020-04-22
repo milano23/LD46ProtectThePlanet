@@ -7,17 +7,6 @@ public class DetectAsteroidDebrisWithLineRay : MonoBehaviour {
   [SerializeField]
   float rayDistance = 10.0f;
 
-
-  // Start is called before the first frame update
-  void Start() {
-
-  }
-
-  // Update is called once per frame
-  void Update() {
-
-  }
-
   public GameObject DetectedAsteroidDebrisWithLine() {
     int asteroidDebrisMask = 1 << layer;
     Vector3 forward = transform.TransformDirection(Vector3.up) * rayDistance;

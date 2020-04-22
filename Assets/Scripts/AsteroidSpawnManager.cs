@@ -37,13 +37,21 @@ public class AsteroidSpawnManager : MonoBehaviour {
   float timeToWait = 0.0f;
   float timeDelay = 0f;
   float waveIntermission = 0.0f;
+  bool itIsIntermission = false;
   GameManager gm;
   bool gameIsRunning = false;
+  bool gameIsOver = false;
   public int Wave { get; set; } = 0;
   public int AsteroidsPerWave { get; set; } = 0;
   public int AsteroidsSleeping { get; set; } = 0;
+  public int ActivatedAsteroids { get; set; } = 0;
   public TextMeshProUGUI AsteroidIncomingInformation;
+  public TextMeshProUGUI ScoreInformation;
   int pooledAmount = 0;
+  int score = 0;
+  int asteroidsGroupedAmount = 0;
+  int asteroidStartCount = 0;
+  int asteroidLengthCount = 0;
   // Start is called before the first frame update
   void Awake() {
     if (_instance != null && _instance != this) {
@@ -68,6 +76,13 @@ public class AsteroidSpawnManager : MonoBehaviour {
     PooledAsteroids = new List<GameObject>();
     Asteroids = new List<GameObject>();
     usedAsteroids = new List<GameObject>();
+    AsteroidsSleeping = 0;
+    ActivatedAsteroids = 0;
+    asteroidsGroupedAmount = 5;
+    asteroidStartCount = 0;
+    asteroidLengthCount = 0;
+    score = 0;
+    ScoreInformation.text = score.ToString();
     if (transform.childCount < pooledAmount) {
       for (int i = 0; i < pooledAmount; i++) {
         GameObject asteroidObject = Instantiate(asteroidPrefabs[UnityEngine.Random.Range(0, 4)]);
@@ -88,9 +103,14 @@ public class AsteroidSpawnManager : MonoBehaviour {
     Wave = 0;
     timeDelay = 0.0f;
     AsteroidsPerWave = 0;
+    ActivatedAsteroids = 0;
     spawnRate = 5.0f;
     AsteroidsSleeping = 0;
     pooledAmount = 0;
+    asteroidsGroupedAmount = 0;
+    asteroidStartCount = 0;
+    asteroidLengthCount = 0;
+    score = 0;
     if (Asteroids.Count > 0) {
       //Debug.Log("Why am i coming in here if there are no more asteroids? " + Asteroids.Count);
       for (int i = 0; i < Asteroids.Count; i++) {
@@ -114,18 +134,17 @@ public class AsteroidSpawnManager : MonoBehaviour {
 
   private void CreateAsteroids() {
     Wave += 1;
-    if (AsteroidsPerWave < 100) {
-      AsteroidsPerWave += 5 * Wave;
-      timeToWait -= 0.75f;
-      if(timeToWait <= 0) {
-        timeToWait = 0.5f;
-      }
-      waveIntermission += Wave;
-      for (int i = 0; i < AsteroidsPerWave; i++) {
-        Asteroids.Add(PooledAsteroids[i]);
-      }
+    AsteroidsPerWave += 5 * Wave;
+    if(Wave == 7) {
+      timeToWait = 5.0f;
     }
-    Debug.Log("Size of pooled asteroids list should still be 110.  Is it: " + PooledAsteroids.Count);
+    timeToWait -= 0.75f;
+    if (timeToWait <= 0) {
+      timeToWait = 0.5f;
+    }
+    for (int i = 0; i < AsteroidsPerWave; i++) {
+      Asteroids.Add(PooledAsteroids[i]);
+    }
     AsteroidIncomingInformation.text = AsteroidsPerWave.ToString();
   }
 
@@ -134,31 +153,25 @@ public class AsteroidSpawnManager : MonoBehaviour {
       if (gameIsRunning) {
       trackTime += Time.deltaTime;
       if(trackTime > spawnRate) {
-        if(Asteroids.Count > 0) {
-          ActivateAsteroid(Asteroids.Last());
-          usedAsteroids.Add(Asteroids.Last());
-          Asteroids.Remove(Asteroids.Last());
-          AsteroidIncomingInformation.text = (AsteroidsPerWave - AsteroidsSleeping).ToString();
-          timeDelay = timeToWait;
-        } else {
-          //Debug.Log("UsedAsteroids is: " + usedAsteroids.Count);
-          //Debug.Log("AsteroidsSleeping is: " + AsteroidsSleeping);
-          if (usedAsteroids.Count == AsteroidsSleeping) {
-            //Debug.Log("I guess we never come in here to start a new wave!");
-            Asteroids.Clear();
-            usedAsteroids.Clear();
-            AsteroidsSleeping = 0;
-            timeDelay = waveIntermission;
-            CreateAsteroids();
+        if(ActivatedAsteroids < AsteroidsPerWave) {
+          if (AsteroidsPerWave < 100) {
+            ActivateAsteroid(Asteroids[ActivatedAsteroids]);
+            AsteroidIncomingInformation.text = (AsteroidsPerWave - AsteroidsSleeping).ToString();
+            timeDelay = timeToWait;
           } else {
+            asteroidLengthCount = asteroidsGroupedAmount + ActivatedAsteroids;
+            for (int i = ActivatedAsteroids; i < asteroidLengthCount; i++) {
+              ActivateAsteroid(Asteroids[i]);
+              AsteroidIncomingInformation.text = (AsteroidsPerWave - AsteroidsSleeping).ToString();
+            }
             timeDelay = timeToWait;
           }
+        } else {
+          timeDelay = 100.0f;
         }
         spawnRate += timeDelay;
       }
-    }
-
-    if(!gameIsRunning) {
+    } else if (gameIsOver) {
       if (Asteroids.Count > 0) {
         for (int i = 0; i < Asteroids.Count; i++) {
           Destroy(Asteroids[i]);
@@ -166,12 +179,12 @@ public class AsteroidSpawnManager : MonoBehaviour {
         Asteroids.Clear();
       }
 
-      if (usedAsteroids.Count > 0) {
-        for (int i = 0; i < usedAsteroids.Count; i++) {
-          Destroy(usedAsteroids[i]);
-        }
-        usedAsteroids.Clear();
-      }
+      //if (usedAsteroids.Count > 0) {
+      //  for (int i = 0; i < usedAsteroids.Count; i++) {
+      //    Destroy(usedAsteroids[i]);
+      //  }
+      //  usedAsteroids.Clear();
+      //}
     }
   }
 
@@ -179,6 +192,7 @@ public class AsteroidSpawnManager : MonoBehaviour {
     if (!gameIsRunning) {
       return;
     }
+    ActivatedAsteroids += 1;
     int randNum = UnityEngine.Random.Range(0, 4);
     switch (randNum) {
       case 0:
@@ -207,36 +221,43 @@ public class AsteroidSpawnManager : MonoBehaviour {
     //Asteroids.RemoveAt(0);
   }
 
-  public void AccountForAsteroid() {
+  public void AccountForAsteroid(float scoreCalculator) {
+    score += Mathf.FloorToInt(10 * scoreCalculator);
     AsteroidsSleeping += 1;
-    OnAsteroidCountChange();
+    if (AsteroidsPerWave == AsteroidsSleeping) {
+      Asteroids.Clear();
+      usedAsteroids.Clear();
+      AsteroidsSleeping = 0;
+      ActivatedAsteroids = 0;
+      spawnRate = waveIntermission + trackTime;
+      CreateAsteroids();
+    }
+      OnAsteroidCountChange();
   }
 
   public void HandleAsteroidCountChange() {
     AsteroidIncomingInformation.text = (AsteroidsPerWave - AsteroidsSleeping).ToString();
+    ScoreInformation.text = score.ToString();
   }
 
   public void HandleOnStateChange() {
-    Debug.Log("Handling state change in Planet to: " + gm.gameState);
-    if(gm.gameState == GameState.MainMenu) {
-      gameIsRunning = false;
-    }
-    if (gm.gameState == GameState.GameOver) {
-      gameIsRunning = false;
-      
-    }
-    if (gm.gameState == GameState.Running) {
-      gameIsRunning = true;
-      //if (Asteroids.Count <= 0) {
-      //  Debug.Log("We are coming into the create section");
-      //  CreateAsteroids();
-      //} else {
-      //  Debug.Log("We are coming into the other section");
-      //  for (int i = 0; i < pooledAmount; i++) {
-      //    float timeDelayed = spawnRate * i;
-      //    StartCoroutine(ActivateAsteroid(timeDelayed, Asteroids[i]));
-      //  }
-      //}
+    switch (gm.gameState) {
+      case GameState.MainMenu:
+        gameIsRunning = false;
+        gameIsOver = false;
+        break;
+      case GameState.GameOver:
+        gameIsRunning = false;
+        gameIsOver = true;
+        break;
+      case GameState.Running:
+        gameIsRunning = true;
+        gameIsOver = false;
+        break;
+      case GameState.Pause:
+        gameIsRunning = false;
+        gameIsOver = false;
+        break;
     }
   }
 }

@@ -7,21 +7,10 @@ public class DetectAsteroidWithLineRay : MonoBehaviour {
   [SerializeField]
   float rayDistance = 10.0f;
 
-
-  // Start is called before the first frame update
-  void Start() {
-    
-  }
-
-  // Update is called once per frame
-  void Update() {
-    
-  }
-
   public GameObject DetectedAsteroidWithLine() {
-    int rocketMask = 1 << layer;
+    int laserMask = 1 << layer;
     Vector3 forward = transform.TransformDirection(Vector3.up) * rayDistance;
-    RaycastHit2D hit = Physics2D.Raycast(transform.position, forward, rayDistance, rocketMask);
+    RaycastHit2D hit = Physics2D.Raycast(transform.position, forward, rayDistance, laserMask);
     Debug.DrawRay(transform.position, forward, Color.red);
     if (hit) {
       Transform objectHit = hit.transform.parent;

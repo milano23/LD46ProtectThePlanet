@@ -22,6 +22,7 @@ public class Asteroid : MonoBehaviour {
   GameObject explosion;
   AsteroidSpawnManager asm;
   bool gameIsRunning = false;
+  bool gameIsOver = false;
   public float Speed {
     get { return speed; }
   }
@@ -46,25 +47,31 @@ public class Asteroid : MonoBehaviour {
     if (gameIsRunning) {
       transform.parent.Rotate(rotationAngle * RotionaSpeed);
       transform.parent.position = Vector3.MoveTowards(this.transform.parent.position, target, Speed * Time.deltaTime);
-    } else {
+    } else if (gameIsOver) {
       gm.OnStateChange -= HandleOnStateChange;
       Destroy(this.gameObject);
     }
   }
 
   public void HandleOnStateChange() {
-    if(gm.gameState == GameState.GameOver) {
-      //Debug.Log("Are we destroying the asteroids early");
-      gameIsRunning = false;
-      //Destroy(this.gameObject);
-    }
-    if (gm.gameState == GameState.Running) {
-      gameIsRunning = true;
+    switch (gm.gameState) {
+      case GameState.GameOver:
+        gameIsRunning = false;
+        gameIsOver = true;
+        break;
+      case GameState.Running:
+        gameIsRunning = true;
+        gameIsOver = false;
+        break;
+      case GameState.Pause:
+        gameIsRunning = false;
+        gameIsOver = false;
+        break;
     }
   }
 
   private void OnTriggerEnter2D(Collider2D collision) {
-    if (collision.transform.tag == "Laser") {
+    if (collision.transform.tag == "LaserBeam") {
       //Debug.Log("You got me!!!!");
       if (!imHit) {
         StartCoroutine(DestroyAsteroid(0.5f));
@@ -75,7 +82,7 @@ public class Asteroid : MonoBehaviour {
     //Debug.Log("Are we getting hit by that ginormous laser beam!!!!");
       hitPlanet = true;
       if (!imHit) {
-        StartCoroutine(DestroyAsteroid(0.5f));
+        StartCoroutine(DestroyAsteroid(0.2f));
       }
       imHit = true;
     }
@@ -83,7 +90,8 @@ public class Asteroid : MonoBehaviour {
 
   IEnumerator DestroyAsteroid(float delayTime) {
     yield return new WaitForSeconds(delayTime);
-    asm.AccountForAsteroid();
+    float scoreCalculator = newScale + speed;
+    asm.AccountForAsteroid(scoreCalculator);
     explosion.transform.position = transform.position;
     explosion.GetComponent<ParticleSystem>().Play();
     if (!hitPlanet) {

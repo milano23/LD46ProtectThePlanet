@@ -11,7 +11,7 @@ public class LaserBeam : MonoBehaviour {
   bool targeting = false;
   Vector3 tempScale;
   // Start is called before the first frame update
-  void Start() {
+  void OnEnable() {
     spriteRender = transform.GetChild(0).GetComponent<SpriteRenderer>();
     spriteRender.enabled = false;
   }
@@ -31,9 +31,6 @@ public class LaserBeam : MonoBehaviour {
     Target = target;
     Vector2 targetDirection = target - transform.position;
     float offSet = distance * 0.5f;
-    //float distance = Vector3.Distance(target, transform.position);
-    Debug.Log("My Target is at: " + target);
-    Debug.Log("How long my laser is: " + distance);
     tempScale = transform.localScale;
     transform.localScale = new Vector3(tempScale.x, distance + offSet, tempScale.z);
     if(!firing) {

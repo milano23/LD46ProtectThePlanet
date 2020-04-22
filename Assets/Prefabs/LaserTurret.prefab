@@ -144,9 +144,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   laserBeam: {fileID: 1711616602263858316}
-  laserNode: {fileID: 1711616603144197841}
+  laserNode: {fileID: 0}
   asteroidsDetected: []
-  PercentageofHealthLeft: 0
   Distance: 1.4
 --- !u!1 &1711616601940515339
 GameObject:
@@ -159,7 +158,7 @@ GameObject:
   - component: {fileID: 1711616601940515338}
   m_Layer: 9
   m_Name: LaserTurret
-  m_TagString: Rocket
+  m_TagString: Laser
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -178,7 +177,6 @@ Transform:
   - {fileID: 1711616601886465709}
   - {fileID: 1711616603341424136}
   - {fileID: 1711616602234788081}
-  - {fileID: 1711616603144197840}
   - {fileID: 1711616602263858317}
   - {fileID: 107468619398136840}
   m_Father: {fileID: 0}
@@ -240,7 +238,7 @@ GameObject:
   - component: {fileID: 1711616602263858316}
   m_Layer: 0
   m_Name: LaserBeam
-  m_TagString: Laser
+  m_TagString: LaserBeam
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -258,7 +256,7 @@ Transform:
   m_Children:
   - {fileID: 1711616602944465039}
   m_Father: {fileID: 1711616601940515338}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1711616602263858316
 MonoBehaviour:
@@ -288,7 +286,7 @@ GameObject:
   - component: {fileID: 1711616602944465038}
   m_Layer: 0
   m_Name: LaserBeamGraphic
-  m_TagString: Laser
+  m_TagString: LaserBeam
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -404,36 +402,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
---- !u!1 &1711616603144197841
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1711616603144197840}
-  m_Layer: 0
-  m_Name: LaserNode
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1711616603144197840
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1711616603144197841}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1711616601940515338}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1711616603341424137
 GameObject:
   m_ObjectHideFlags: 0
@@ -508,7 +476,7 @@ Transform:
   m_LocalScale: {x: 0.25, y: 1.5, z: 1}
   m_Children: []
   m_Father: {fileID: 1711616601940515338}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &218401975839145242
 SpriteRenderer:
@@ -572,4 +540,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43cc9212326fd1748add3fcf6ae1b6b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  laserTurret: {fileID: 1711616601886465705}
+  PercentageofHealthLeft: 0

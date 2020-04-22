@@ -6,14 +6,17 @@ using UnityEngine;
 public class Vacuum : MonoBehaviour {
   bool isDragging = false;
   bool constructing = false;
-  bool installed = false;
+  public bool installed = false;
   Vector2 rayPos = Vector2.zero;
   DetectAsteroidDebrisWithLineRay detectDebrisNode;
   GameManager gm;
   bool gameIsRunning = false;
+  bool gameIsOver = false;
   public float Distance = 1.5f;
   ButtonHandler buttonHandler;
   HealthBar healthBar;
+  GameObject vacuumNozel;
+  PlanetMove planet;
   //float lifeExpectancy = 0.0f;
   //float timeTracker = 0.0f;
   // Start is called before the first frame update
@@ -24,6 +27,8 @@ public class Vacuum : MonoBehaviour {
     detectDebrisNode = transform.parent.GetChild(1).GetComponent<DetectAsteroidDebrisWithLineRay>();
     buttonHandler = GameObject.Find("LevelController").GetComponent<ButtonHandler>();
     healthBar = transform.parent.GetChild(2).GetComponent<HealthBar>();
+    vacuumNozel = transform.parent.GetChild(3).gameObject;
+    vacuumNozel.SetActive(false);
     //lifeExpectancy = Random.Range(45.0f, 60.0f);
   }
 
@@ -58,22 +63,30 @@ public class Vacuum : MonoBehaviour {
         //  Destroy(transform.parent.gameObject);
         //}
       }
-    } else {
+    } else if(gameIsOver) {
       gm.OnStateChange -= HandleOnStateChange;
       Destroy(this.gameObject);
     }
   }
 
   public void HandleOnStateChange() {
-    Debug.Log("Handling state change in Vacuum to: " + gm.gameState);
-    if (gm.gameState == GameState.MainMenu) {
-      gameIsRunning = false;
-    }
-    if (gm.gameState == GameState.GameOver) {
-      gameIsRunning = false;
-    }
-    if (gm.gameState == GameState.Running) {
-      gameIsRunning = true;
+    switch (gm.gameState) {
+      case GameState.MainMenu:
+        gameIsRunning = false;
+        gameIsOver = false;
+        break;
+      case GameState.GameOver:
+        gameIsRunning = false;
+        gameIsOver = true;
+        break;
+      case GameState.Running:
+        gameIsRunning = true;
+        gameIsOver = false;
+        break;
+      case GameState.Pause:
+        gameIsRunning = false;
+        gameIsOver = false;
+        break;
     }
   }
 
@@ -88,23 +101,19 @@ public class Vacuum : MonoBehaviour {
     if (constructing) {
       constructing = false;
       installed = true;
+      vacuumNozel.SetActive(true);
+      planet = transform.root.GetChild(0).GetComponent<PlanetMove>();
+      planet.AddDefenseItemToList(transform.parent.gameObject);
     }
   }
 
   private void OnTriggerEnter2D(Collider2D collision) {
     if (!installed) {
-      Debug.Log("Are we hitting");
       if (collision.transform.parent.tag == "Planet") {
         isDragging = false;
         constructing = true;
-        //this.transform.parent.LookAt()
       }
-    } else {
-      if (collision.transform.tag == "AsteroidDebris") {
-        //Debug.Log("Where is my money!!!");
-        buttonHandler.DefenseFund += 5;
-      }
-    }
+    } 
 
   }
 

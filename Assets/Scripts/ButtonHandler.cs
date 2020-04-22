@@ -15,6 +15,8 @@ public class ButtonHandler : MonoBehaviour {
   [SerializeField]
   GameObject mainMenuPanel;
   [SerializeField]
+  GameObject pauseScreenPanel;
+  [SerializeField]
   GameObject planet;
   GameManager gm;
   [SerializeField]
@@ -25,8 +27,6 @@ public class ButtonHandler : MonoBehaviour {
   TextMeshProUGUI buildPlatformQuantity;
   [SerializeField]
   TextMeshProUGUI turretDestroyedInfo;
-  [SerializeField]
-  TextMeshProUGUI asteroidIncomingInformation;
 
   AsteroidSpawnManager asteroidSpawnManager;
   int amountOfTurretPlatformsAllowed = 3;
@@ -45,7 +45,6 @@ public class ButtonHandler : MonoBehaviour {
     gm.SetGameState(GameState.MainMenu);
     costText.text = DefenseFund.ToString();
     buildPlatformQuantity.text = amountOfTurretPlatformsAllowed.ToString();
-    asteroidIncomingInformation.transform.parent.gameObject.SetActive(true);
     if (gameOverPanel == null) {
       Debug.Log("Game over panel has not been assigned.", this);
     }
@@ -54,43 +53,69 @@ public class ButtonHandler : MonoBehaviour {
   // Update is called once per frame
   void Update() {
     costText.text = DefenseFund.ToString();
+
+    if (Input.GetKeyDown(KeyCode.Escape)) {
+      if (gm.gameState == GameState.Running) {
+        gm.SetGameState(GameState.Pause);
+      } else if (gm.gameState == GameState.Pause) {
+        gm.SetGameState(GameState.Running);
+      }
+    }
   }
 
   public void HandleOnStateChange() {
-    
-    Debug.Log("Handling state change to: " + gm.gameState);
-    if (gm.gameState == GameState.MainMenu) {
-      if (mainMenuPanel != null) {
+    switch (gm.gameState) {
+      case GameState.MainMenu:
         planet = null;
         mainMenuPanel.transform.GetChild(0).gameObject.SetActive(true);
         planet = GameObject.FindGameObjectWithTag("Planet");
         planet.gameObject.SetActive(false);
         asteroidSpawnManager.gameObject.SetActive(false);
-      }
-      if(gameOverPanel != null) {
-        gameOverPanel.transform.GetChild(0).gameObject.SetActive(false);
-        //asteroidSpawnManager.gameObject.SetActive(false);
-        planet.gameObject.SetActive(false);
-      }
-    }
-    if (gm.gameState == GameState.GameOver) {
-      if (gameOverPanel != null) {
+        if (gameOverPanel != null) {
+          gameOverPanel.transform.GetChild(0).gameObject.SetActive(false);
+        }
+        if (pauseScreenPanel != null) {
+          pauseScreenPanel.SetActive(false);
+        }
+        break;
+      case GameState.GameOver:
         gameOverPanel.transform.GetChild(0).gameObject.SetActive(true);
-      }
-    }
-    if(gm.gameState == GameState.Running) {
-      if(asteroidSpawnManager != null) {
+        break;
+      case GameState.Running:
         asteroidSpawnManager.gameObject.SetActive(true);
-      } else {
-        Debug.Log("Why cant we find the asteroidMnager.  It is right there.");
-      }
-      planet.gameObject.SetActive(true);
-      if (gameOverPanel != null) {
-        gameOverPanel.transform.GetChild(0).gameObject.SetActive(false);
-      }
-      if(mainMenuPanel != null) {
-        mainMenuPanel.transform.GetChild(0).gameObject.SetActive(false);
-      }
+        planet.gameObject.SetActive(true);
+        if (gameOverPanel != null) {
+          gameOverPanel.transform.GetChild(0).gameObject.SetActive(false);
+        }
+        if (mainMenuPanel != null) {
+          mainMenuPanel.transform.GetChild(0).gameObject.SetActive(false);
+        }
+        if (pauseScreenPanel != null) {
+          pauseScreenPanel.SetActive(false);
+        }
+        break;
+      case GameState.Tutorial:
+        if (gameOverPanel != null) {
+          gameOverPanel.transform.GetChild(0).gameObject.SetActive(false);
+        }
+        if (mainMenuPanel != null) {
+          mainMenuPanel.transform.GetChild(0).gameObject.SetActive(false);
+        }
+        if (pauseScreenPanel != null) {
+          pauseScreenPanel.SetActive(false);
+        }
+        break;
+      case GameState.Pause:
+        if (gameOverPanel != null) {
+          gameOverPanel.transform.GetChild(0).gameObject.SetActive(false);
+        }
+        if (mainMenuPanel != null) {
+          mainMenuPanel.transform.GetChild(0).gameObject.SetActive(false);
+        }
+        if(pauseScreenPanel != null) {
+          pauseScreenPanel.SetActive(true);
+        }
+        break;
     }
   }
 
@@ -136,8 +161,24 @@ public class ButtonHandler : MonoBehaviour {
     gm.SetGameState(GameState.Running);
   }
 
+  public void StartGameWithTutorial() {
+    gm.SetGameState(GameState.Tutorial);
+  }
+
   public void PlayAgain() {
     StartCoroutine(LoadAsyncScene());
+  }
+
+  public void QuitGame() {
+    Application.Quit();
+  }
+
+  public void GoToMainMenu() {
+    StartCoroutine(LoadAsyncScene());
+  }
+
+  public void ResumeGame() {
+    gm.SetGameState(GameState.Running);
   }
 
   IEnumerator LoadAsyncScene() {

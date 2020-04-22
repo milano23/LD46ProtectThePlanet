@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-public enum GameState {None, Info, MainMenu, Running, GameOver };
+public enum GameState {None, Tutorial, MainMenu, Running, Pause, GameOver };
 public delegate void OnStateChangeHandler();
 
 public class GameManager : MonoBehaviour {
@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour {
 
   public GameState gameState { get; private set; }
   public event OnStateChangeHandler OnStateChange;
+  public bool TutorialPlayed = false;
 
   // Start is called before the first frame update
   void Awake() {

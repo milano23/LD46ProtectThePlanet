@@ -11,6 +11,8 @@ TagManager:
   - AsteroidManager
   - Vacuum
   - AsteroidDebris
+  - LaserBeam
+  - VacuumNozel
   layers:
   - Default
   - TransparentFX
