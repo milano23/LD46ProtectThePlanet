@@ -318,6 +318,7 @@ MonoBehaviour:
   noMoneyInfo: {fileID: 1744757112}
   buildPlatformQuantity: {fileID: 60757715}
   turretDestroyedInfo: {fileID: 1134790514}
+  yourHighScore: {fileID: 853902922}
 --- !u!4 &22724948
 Transform:
   m_ObjectHideFlags: 0
@@ -7161,7 +7162,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Monitor power of turrets as they deplete oiver time.
+  m_text: Monitor power of the vacuum as they deplete over time.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3c241e839fe45a34dab4e3c37cf50e0f, type: 2}
   m_sharedMaterial: {fileID: 4647661419242958688, guid: 3c241e839fe45a34dab4e3c37cf50e0f,
@@ -11296,7 +11297,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Laser destroys asteroiods
+  m_text: Laser destroys asteroids
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3c241e839fe45a34dab4e3c37cf50e0f, type: 2}
   m_sharedMaterial: {fileID: 4647661419242958688, guid: 3c241e839fe45a34dab4e3c37cf50e0f,

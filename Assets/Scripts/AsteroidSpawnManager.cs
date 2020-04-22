@@ -39,6 +39,7 @@ public class AsteroidSpawnManager : MonoBehaviour {
   float waveIntermission = 0.0f;
   bool itIsIntermission = false;
   GameManager gm;
+  ButtonHandler buttonHandler;
   bool gameIsRunning = false;
   bool gameIsOver = false;
   public int Wave { get; set; } = 0;
@@ -67,6 +68,7 @@ public class AsteroidSpawnManager : MonoBehaviour {
     gm = GameManager.Instance;
     gm.OnStateChange += HandleOnStateChange;
     OnAsteroidCountChange += HandleAsteroidCountChange;
+    buttonHandler = GameObject.Find("LevelController").GetComponent<ButtonHandler>();
     //AsteroidIncomingInformation = GameObject.Find("AsteroidsIncomingText").GetComponent<TextMeshProUGUI>();
     //AsteroidIncomingInformation.transform.parent.gameObject.SetActive(true);
     spawnRate = 5.0f;
@@ -238,6 +240,7 @@ public class AsteroidSpawnManager : MonoBehaviour {
   public void HandleAsteroidCountChange() {
     AsteroidIncomingInformation.text = (AsteroidsPerWave - AsteroidsSleeping).ToString();
     ScoreInformation.text = score.ToString();
+    buttonHandler.HighScore = score;
   }
 
   public void HandleOnStateChange() {

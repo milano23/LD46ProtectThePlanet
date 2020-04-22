@@ -27,6 +27,9 @@ public class ButtonHandler : MonoBehaviour {
   TextMeshProUGUI buildPlatformQuantity;
   [SerializeField]
   TextMeshProUGUI turretDestroyedInfo;
+  [SerializeField]
+  TextMeshProUGUI yourHighScore;
+  public int HighScore { get; set; } = 0;
 
   AsteroidSpawnManager asteroidSpawnManager;
   int amountOfTurretPlatformsAllowed = 3;
@@ -79,6 +82,7 @@ public class ButtonHandler : MonoBehaviour {
         }
         break;
       case GameState.GameOver:
+        yourHighScore.text = HighScore.ToString();
         gameOverPanel.transform.GetChild(0).gameObject.SetActive(true);
         break;
       case GameState.Running:
